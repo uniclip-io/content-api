@@ -11,7 +11,7 @@ public class ContentRepository
     public ContentRepository(string connectionString)
     {
         var mongoClient = new MongoClient(connectionString);
-        var database = mongoClient.GetDatabase("content-service");
+        var database = mongoClient.GetDatabase("content-api");
         _bucket = new GridFSBucket(database);
     }
     
