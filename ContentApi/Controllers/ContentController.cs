@@ -1,8 +1,6 @@
 using ContentApi.Repository;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-using MongoDB.Driver;
-using MongoDB.Driver.GridFS;
 
 namespace ContentApi.Controllers;
 
@@ -16,19 +14,20 @@ public class ContentController : ControllerBase
     {
         _contentRepository = contentRepository;
     }
-    
+
     [HttpPost("/store")]
-    public async Task<IActionResult> StoreContent(IFormFile file)
+    public async Task<IActionResult> StoreContent([FromForm] IFormFile file)
     {
         if (file == null || file.Length == 0)
         {
             return BadRequest("Invalid content.");
         }
+
         var contentId = await _contentRepository.UploadFile(file);
 
         return Ok(contentId.ToString());
     }
-    
+
     [HttpGet("/fetch/{contentId}")]
     public async Task<IActionResult> FetchContent(string contentId)
     {
@@ -36,8 +35,9 @@ public class ContentController : ControllerBase
         {
             return BadRequest("Invalid content ID.");
         }
+
         var stream = await _contentRepository.GetFile(objectId);
-        
+
         return File(stream, stream.FileInfo.Metadata["contentType"].AsString);
     }
 }
