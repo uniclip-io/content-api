@@ -38,6 +38,6 @@ public class ContentController : ControllerBase
 
         var stream = await _contentRepository.GetFile(objectId);
 
-        return File(stream, stream.FileInfo.Metadata["contentType"].AsString);
+        return File(stream, stream.FileInfo.Metadata["contentType"].AsString, stream.FileInfo.Filename);
     }
 }
