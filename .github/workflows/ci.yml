@@ -42,6 +42,6 @@ jobs:
           image: greffnoah/content-api
           tags: latest
           registry: docker.io
-          dockerfile: Dockerfile
+          dockerfile: ContentApi/Dockerfile
           username: greffnoah
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
