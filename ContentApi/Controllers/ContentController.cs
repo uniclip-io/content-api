@@ -1,4 +1,5 @@
-using ContentApi.Repository;
+using ContentApi.Dtos;
+using ContentApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 
@@ -8,22 +9,30 @@ namespace ContentApi.Controllers;
 [Route("content")]
 public class ContentController : ControllerBase
 {
-    private readonly ContentRepository _contentRepository;
+    private readonly ContentService _contentService;
 
-    public ContentController(ContentRepository contentRepository)
+    public ContentController(ContentService contentService)
     {
-        _contentRepository = contentRepository;
+        _contentService = contentService;
     }
 
     [HttpPost("/store")]
-    public async Task<IActionResult> StoreContent([FromForm] IFormFile file)
+    public async Task<IActionResult> StoreContent([FromForm] UploadFile uploadFile)
     {
+        var userId = uploadFile.UserId;
+        var file = uploadFile.File;
+        var type = uploadFile.Type;
+        
+        if (type == null || (type != "file" && type != "folder" && type != "diverse"))
+        {
+            return BadRequest("Invalid `type`.");
+        }
         if (file == null || file.Length == 0)
         {
             return BadRequest("Invalid content.");
         }
 
-        var contentId = await _contentRepository.UploadFile(file);
+        var contentId = await _contentService.UploadFile(userId, file, type);
 
         return Ok(contentId.ToString());
     }
@@ -36,8 +45,9 @@ public class ContentController : ControllerBase
             return BadRequest("Invalid content ID.");
         }
 
-        var stream = await _contentRepository.GetFile(objectId);
+        var stream = await _contentService.DownloadFile(objectId);
+        var contentType = stream.FileInfo.Metadata["contentType"].AsString;
 
-        return File(stream, stream.FileInfo.Metadata["contentType"].AsString, stream.FileInfo.Filename);
+        return File(stream, contentType, stream.FileInfo.Filename);
     }
 }
