@@ -8,12 +8,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IClient>(_ => new Client(builder.Configuration["ApiKeys:Bugsnag"]));
-builder.Services.AddSingleton(_ => new ContentRepository(builder.Configuration["ConnectionStrings:MongoDb"]!));
-builder.Services.AddSingleton(_ => new RabbitMqService(builder.Configuration["ConnectionStrings:RabbitMq"]!));
+builder.Services.AddSingleton<IClient>(_ => new Client(builder.Configuration["Bugsnag:ApiKey"]));
+builder.Services.AddSingleton(_ => new ContentRepository(builder.Configuration["MongoDb:Connection"]!));
+builder.Services.AddSingleton(_ => new RabbitMqService(
+    builder.Configuration["RabbitMq:Username"]!, 
+    builder.Configuration["RabbitMq:Password"]!, 
+    builder.Configuration["RabbitMq:Uri"]!
+));
 builder.Services.AddTransient(s => new ContentService(
-    s.GetService<ContentRepository>(),
-    s.GetService<RabbitMqService>()
+    s.GetService<ContentRepository>()!,
+    s.GetService<RabbitMqService>()!
 ));
 
 var app = builder.Build();

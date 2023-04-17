@@ -13,9 +13,14 @@ public class RabbitMqService : IDisposable
     private readonly IConnection _connection;
     private readonly IModel _channel;
 
-    public RabbitMqService(string hostName)
+    public RabbitMqService(string username, string password, string uri)
     {
-        var factory = new ConnectionFactory { HostName = hostName };
+        var factory = new ConnectionFactory
+        {
+            UserName = username,
+            Password = password,
+            Uri = new Uri(uri)
+        };
         _connection = factory.CreateConnection();
 
         _channel = _connection.CreateModel();
