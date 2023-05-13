@@ -45,9 +45,8 @@ public class ContentController : ControllerBase
             return BadRequest("Invalid content ID.");
         }
 
-        var stream = await _contentService.DownloadFile(objectId);
-        var contentType = stream.FileInfo.Metadata["contentType"].AsString;
-
-        return File(stream, contentType, stream.FileInfo.Filename);
+        var file = await _contentService.DownloadFile(objectId);
+        
+        return File(file.Stream, file.ContentType, file.Filename);
     }
 }

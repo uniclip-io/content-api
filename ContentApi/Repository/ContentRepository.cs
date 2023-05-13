@@ -15,17 +15,17 @@ public class ContentRepository
         _bucket = new GridFSBucket(database);
     }
     
-    public async Task<ObjectId> UploadFile(IFormFile file)
+    public async Task<ObjectId> AddFile(string fileName, string contentType, Stream buffer)
     {
         var options = new GridFSUploadOptions
         {
             Metadata = new BsonDocument
             {
-                { "contentType", file.ContentType }
+                { "contentType", contentType }
             }
         };
     
-        return await _bucket.UploadFromStreamAsync(file.FileName, file.OpenReadStream(), options);
+        return await _bucket.UploadFromStreamAsync(fileName, buffer, options);
     }
     
     public async Task<GridFSDownloadStream> GetFile(ObjectId objectId)
