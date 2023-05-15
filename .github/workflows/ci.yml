@@ -56,7 +56,7 @@ jobs:
 
     - name: Download Task Definition
       run: |
-        aws ecs describe-task-definition --task-definition ClipboardApiTask --query taskDefinition > task-definition.json
+        aws ecs describe-task-definition --task-definition ContentApiTask --query taskDefinition > task-definition.json
         
     - name: Deploy to Amazon ECS
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
