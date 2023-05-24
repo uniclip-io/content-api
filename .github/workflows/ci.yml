@@ -27,7 +27,7 @@ jobs:
       - name: Test
         run: dotnet test --no-restore --verbosity normal
 
-  docker:
+  aws:
     needs: build
 
     runs-on: ubuntu-latest
