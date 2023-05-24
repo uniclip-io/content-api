@@ -10,7 +10,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IClient>(_ => new Client(builder.Configuration["Bugsnag_ApiKey"]));
 builder.Services.AddSingleton(_ => new ContentRepository(builder.Configuration["MongoDb_Connection"]!));
-builder.Services.AddSingleton(_ => new EncryptionService(builder.Configuration["EncryptionKey"]!));
+builder.Services.AddSingleton(_ => new EncryptionService(builder.Configuration["Encryption_Key"]!));
 builder.Services.AddSingleton(_ => new RabbitMqService(
     builder.Configuration["RabbitMq_Username"]!, 
     builder.Configuration["RabbitMq_Password"]!, 
