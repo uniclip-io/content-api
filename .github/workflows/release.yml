@@ -1,9 +1,9 @@
-name: CI Pipeline
+name: Release CI Pipeline
 
 on:
-  push:
-    branches:
-      - master
+  release:
+    types:
+      - created
 
 jobs:
   build:
@@ -49,7 +49,7 @@ jobs:
       - name: Push Image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: uniclip/content-api
+          ECR_REPOSITORY: uniclip/clipboard-api
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -f ContentApi/Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
