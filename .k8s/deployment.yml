@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: content-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: content-api
+  template:
+    metadata:
+      labels:
+        app: content-api
+    spec:
+      containers:
+        - name: content-api
+          image: greffnoah/content-api:IMAGE_TAG
+          ports:
+            - containerPort: 80
+          env:
+            - name: BUGSNAG_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: content-secrets
+                  key: bugsnag-apikey
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: content-secrets
+                  key: encryption-key
+            - name: MONGODB_CONNECTION
+              valueFrom:
+                secretKeyRef:
+                  name: content-secrets
+                  key: mongodb-connection
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: content-secrets
+                  key: rabbitmq-password
+            - name: RABBITMQ_URI
+              valueFrom:
+                secretKeyRef:
+                  name: content-secrets
+                  key: rabbitmq-uri
+            - name: RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: content-secrets
+                  key: rabbitmq-username
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: content-api-service
+spec:
+  selector:
+    app: content-api
+  ports:
+    - port: 80
